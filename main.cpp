@@ -32,13 +32,16 @@ THREEYD_LIB int get_42() { return 42; }
 
 THREEYD_LIB int is_prime(int n) {
   constexpr auto THREADS = 8;
+  constexpr auto SINGLE_THREAD_LIMIT = 1000;
 
   if (n == 1) {
     return 0;
   } else if (n == 2) {
     return 1;
+  } else if (n < SINGLE_THREAD_LIMIT) {
+    return static_cast<int>(check_prime_chunk(2, n / 2 + 1, n));
   } else {
-    std::array<Future,THREADS> futures;
+    std::array<Future, THREADS> futures;
     const auto ELEMENT_PER_CHUNK = n / (2 * THREADS);
     for (int i = 1; i < THREADS - 1; ++i) {
       futures[i].future =
@@ -76,7 +79,7 @@ THREEYD_LIB int is_prime(int n) {
         return 1;
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds (10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     return 0;
@@ -88,7 +91,7 @@ int main() {
   std::cout << threeyd::hello_world_string() << " " << threeyd::get_42()
             << std::endl;
 
-  for (int i = 1000; i < 1020; ++i) {
+  for (int i = 990; i < 1010; ++i) {
     std::cout << i << " " << threeyd::is_prime(i) << std::endl;
   }
 

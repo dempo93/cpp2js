@@ -17,6 +17,7 @@
     const NUMBER=2000000011
 
     Module.onRuntimeInitialized = async _ => {
+        // Create bindings with Module.cwrap('func_name', 'return type', ['array of arguments types'])
         var cpp_42=Module.cwrap('get_42', 'number',[])
         var cpp_hello_world=Module.cwrap('hello_world_string','string',[])
         var cpp_is_prime=Module.cwrap('is_prime','number',['number'])
