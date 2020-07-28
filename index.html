@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="/cmake-build-cross/cpp2js.js"></script>
+<script>
+
+    function js_is_prime(n)
+    {
+        for(var i = 2; i <= n/2; i++)
+            if(n % i === 0) return false;
+        return n > 1;
+    }
+    const NUMBER=2000000011
+
+    Module.onRuntimeInitialized = async _ => {
+        var cpp_42=Module.cwrap('get_42', 'number',[])
+        var cpp_hello_world=Module.cwrap('hello_world_string','string',[])
+        var cpp_is_prime=Module.cwrap('is_prime','number',['number'])
+        console.log("cpp2js initialized");
+        console.log(cpp_hello_world() + "! The answer is: " + cpp_42())
+
+
+        var t0 = performance.now()
+        var prime=js_is_prime(NUMBER)
+        var t1 = performance.now()
+        console.log("JS prime number test computed in: " + (t1-t0) + " result: " + prime)
+
+        t0 = performance.now()
+        prime= cpp_is_prime(NUMBER)===1
+        t1 = performance.now()
+        console.log("CPP prime number test in: " + (t1-t0) + " result: " + prime)
+    };
+</script>
+</body>
+</html>
